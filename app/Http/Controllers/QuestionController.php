@@ -8,6 +8,10 @@ use App\Http\Requests\AskQuestionRequest;
 
 class QuestionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -63,9 +67,10 @@ class QuestionController extends Controller
      * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Question $question)
     {   
-        $question = Question::findOrFail($id);
+        // $question = Question::findOrFail($id);
+        $this->authorize('update', $question);//policy
         return view('questions.edit', compact('question'));
     }
 
@@ -77,7 +82,9 @@ class QuestionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(AskQuestionRequest $request, Question $question)
-    {
+    {   
+        $this->authorize('update', $question);//policy
+
         $question->update($request->only('title', 'body'));
         return redirect()->route('questions.index')->with('success', 'Your question has been updated');
     }
@@ -89,7 +96,9 @@ class QuestionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Question $question)
-    {
+    {   
+        $this->authorize('delete', $question);//policy
+
         $question->delete();
         return redirect()->route('questions.index')->with('success', 'Your question has been deleted.');
     }
