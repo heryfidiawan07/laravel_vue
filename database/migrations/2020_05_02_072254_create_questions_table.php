@@ -26,6 +26,7 @@ class CreateQuestionsTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('best_answer_id')->references('id')->on('answers')->onDelete('SET NULL');
         });
     }
 
